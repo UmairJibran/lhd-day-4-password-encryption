@@ -13,8 +13,6 @@ class Menu{
 				case 'e':
 				case 'D':
 				case 'd':{
-					if(encDec.fileChecker())
-						break;
 					encDec.processStarter(option[0]);
 					break;
 				}

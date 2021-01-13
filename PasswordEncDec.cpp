@@ -5,17 +5,17 @@ using namespace std;
 class PasswordEncDec{
 	private:
 //		Variables
-		int TOTAL_KEYS;
 		string password;
-		int shift[TOTAL_KEYS];
+		int shift[200];
 		ifstream inputFile;
 		ofstream outputFile;
+		int j=0;
 		
 //		Functions		
 		void passwordSaver(){
-			outputFile << password;
-			outputFile.close();
-			inputFile.close();
+			outputFile << password<<endl;
+			//outputFile.close();
+			//inputFile.close();
 		}
 		int getValue(int currValue, int shift , char p){
 			if(p == 'e'){
@@ -35,15 +35,12 @@ class PasswordEncDec{
 	public:
 		PasswordEncDec(){
 			password = "NULL";
-			inputFile.open("pass.txt");
-			getline(inputFile,password);
-			outputFile.open("pass.txt");
 			ifstream t;
 			t.open("numbers.txt");
 			if(t.is_open()){
 				string te;
 				StringToInt STOI;
-				for(int i = 0 ; i < TOTAL_KEYS ; i++){						
+				for(int i = 0 ; i < 200 ; i++){						
 					getline(t,te);
 					shift[i]=STOI.stoi( te );
 				}
@@ -71,16 +68,25 @@ class PasswordEncDec{
 				return 0;
 			}
 		}
-		void processStarter(char o){
-			for(int i = 0 , j = 0; i < password.length() ; i++,j++){
-				if(j >= TOTAL_KEYS) j = 0;
-				int newChar = getValue(int(password[i]),shift[j],o);
-				password[i] = char(int(newChar));
+		void func(char o){
+			for(int i = 0 ; i < password.length() ; i++){
+				if(j >= 200) j = 0;
+				if(password[i] != char(9)){
+					password[i] = char(int(getValue(int(password[i]),shift[j],o)));
+					j++;
+				}else continue;
 			}
 			passwordSaver();
+		}
+		void processStarter(char o){
+			//justAFunction(o);
+			inputFile.open("plain_password.txt");
+			outputFile.open("encrypted_password.txt",ios_base::app);
+			while(getline(inputFile,password)) func(o);
 			cout << "Check your output file for ";
 			(o == 'e' || o == 'E')?cout<<"Encrypted":cout<<"Decrypted";
 			cout<<" password";
 			cout << endl << setw(50) << "Process Completed!";			
 		}
+		
 };
